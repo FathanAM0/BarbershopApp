@@ -81,3 +81,4 @@ func cetakListBarber(A Arrint, n int) {
 		fmt.Println()
 	}
 }
+asdfghjkl
