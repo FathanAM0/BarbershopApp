@@ -17,16 +17,23 @@ func main() {
 	var data Arrint
 	menu()
 	fmt.Scan(&x)
-	if x == 1 {haloa)
+	if x == 1 {
+		fmt.Println("Berapa banyak barber yang ingin anda input?")
+		fmt.Scan(&nData)
+		inputBarber(&data, &nData)
+		cetakListBarber(data, nData)
 	}
+
 }
 
 func menu() {
-	// FS: Mencetak pertanyaan untuk menu awal
-	fmt.Println("Siapa anda?", "\n1. Admin", "\n2. Customer")
+	//FS: Mencetak pertanyaan untuk menu awal
+	fmt.Println("Siapa anda?", "\n", "1. Admin", "\n", "2. Customer")
+
 }
 
 func inputBarber(A *Arrint, n *int) {
+
 	/*
 		IS: Array barber A sepanjang n terdefinisi sembarang
 		FS: Array Barber A sepanjang n telah terdefinisi
@@ -35,46 +42,35 @@ func inputBarber(A *Arrint, n *int) {
 	if *n > NMAX {
 		*n = NMAX
 	}
+	var i, j int
 
-	var i, j, tanggal int
-
-	fmt.Println("Masukkan nama, harga, dan rating barber")
-	for i = 0; i < *n; i++ {
+	fmt.Println("Masukkan nama,harga dan rating barber")
+	i = 0
+	j = 0
+	for i < *n {
 		fmt.Scan(&A[i].nama, &A[i].harga, &A[i].rating)
-		// fitur untuk input tanggal
-		fmt.Println("Masukkan tanggal (masukkan 0 untuk berhenti):")
-		j = 0
-		for {
-			fmt.Scan(&tanggal)
-			if tanggal == 0 {
-				break
-			}
-			if j < NMAX {
-				A[i].tanggal[j] = tanggal
-				j++
-			} else {
-				fmt.Println("Jumlah tanggal yang dimasukkan telah mencapai batas maksimal.")
-				break
-			}
+		//fitur while buat tanggal
+		A[i].tanggal[j] = 1
+		for A[i].tanggal[j] != 0 {
+			fmt.Scan(&A[i].tanggal[j])
+			j++
 		}
+		i++
 	}
-}
 
+}
 func cetakListBarber(A Arrint, n int) {
 	/*
-		IS: Array barber A sepanjang n terdefinisi
-		FS: Menampilkan daftar barber
+		IS: Array barber A sepanjang n terdefinisi sembarang
+		FS: Array Barber A sepanjang n telah terdefinisi
 	*/
 
 	var i int
-	for i = 0; i < n; i++ {
-		fmt.Printf("%d. Nama: %s, Harga: %d, Rating: %d, Tanggal: ", i+1, A[i].nama, A[i].harga, A[i].rating)
-		j := 0
-		for A[i].tanggal[j] != 0 && j < NMAX {
-			fmt.Printf("%d ", A[i].tanggal[j])
-			j++
-		}
-		fmt.Println()
+	var no string
+	i = 0
+	for i < n {
+		no = string(i) + "."
+		fmt.Println(no, A[i].nama, A[i].harga, A[i].rating)
+		i++
 	}
 }
-asdfghjkl
