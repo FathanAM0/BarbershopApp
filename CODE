@@ -17,11 +17,7 @@ func main() {
 	var data Arrint
 	menu()
 	fmt.Scan(&x)
-	if x == 1 {
-		fmt.Println("Berapa banyak barber yang ingin anda input?")
-		fmt.Scan(&nData)
-		inputBarber(&data, &nData)
-		cetakListBarber(data, nData)
+	if x == 1 {haloa)
 	}
 }
 
