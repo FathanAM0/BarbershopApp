@@ -7,66 +7,128 @@ const NMAX int = 1024
 type barber struct {
 	nama    string
 	tanggal [NMAX]int
-	rating  int
-	harga   int
+
+	rating int
+	harga  int
 }
 type Arrint [NMAX]barber
 
-func main() {
-	var x, nData, pilihan int
-	var data Arrint
+var x, nData int
+var data Arrint
 
-	var cariBarberName string
-	menuAwal()
+func main() {
+
+	start()
+
+}
+
+func start() {
+	fmt.Println("Siapa anda?", "\n1. Admin", "\n2. Customer")
 	fmt.Scan(&x)
 	if x == 1 {
 		menuAdmin()
-		fmt.Scan(&pilihan)
-		if pilihan == 1 {
-			fmt.Println("Berapa banyak barber yang ingin anda input?")
-			fmt.Scan(&nData)
-			inputBarber(&data, &nData)
-			cetakListBarber(data, nData)
-			main()
-		} else {
-			main()
-		}
 	} else if x == 2 {
 		menuCustomer()
-		fmt.Scan(&pilihan)
-		if pilihan == 1 {
-			cetakListBarber(data, nData)
-		} else if pilihan == 2 {
-			fmt.Println("Masukkan nama barber yang ingin dicari:")
-			fmt.Scan(&cariBarberName)
-			cariBarber(data, nData, cariBarberName)
-		} else if pilihan == 3 {
-			arrHarga := filterHarga(data, nData)
+	} else {
+		fmt.Println("masukan tidak valid silahkan pilih kembali")
+		start()
+	}
+}
 
-		} else {
-			main()
+func menuAdmin() {
+	fmt.Println("1. Masukkan data", "\n0. kembali ke menu")
+	fmt.Scan(&x)
+	if x == 0 {
+		start()
+	} else if x == 1 {
+		fmt.Println("berapa banyak barber yang akan diinput?")
+		fmt.Scan(&nData)
+		inputBarber(&data, &nData)
+		menuAdmin()
+	} else {
+		fmt.Println("masukan tidak valid silahkan pilih kembali")
+		menuAdmin()
+	}
+}
+
+func menuCustomer() {
+	var namaDicari string
+	fmt.Println("1. Lihat list barber", "\n2. Cari nama barber")
+	fmt.Scan(&x)
+	if x == 1 {
+		fmt.Println("Berikut adalah list barber kami")
+		cetakListBarber(data, nData)
+
+	} else if x == 2 {
+		fmt.Println("Masukkan nama yang ingin anda cari")
+		fmt.Scan(&namaDicari)
+		cariNamaBarber(data, nData, namaDicari)
+	} else {
+		fmt.Println("masukan tidak valid silahkan pilih kembali")
+		menuCustomer()
+	}
+}
+
+func inputBarber(A *Arrint, n *int) {
+	/*
+		IS: Array barber A sepanjang n terdefinisi sembarang
+		FS: Array Barber A sepanjang n telah terdefinisi
+	*/
+
+	if *n > NMAX {
+		*n = NMAX
+	}
+
+	var i, j, tanggal int
+
+	fmt.Println("Masukkan nama, harga, dan rating barber")
+	for i = 0; i < *n; i++ {
+		fmt.Scan(&A[i].nama, &A[i].harga, &A[i].rating)
+
+		// fitur untuk input tanggal
+		fmt.Println("Masukkan tanggal (masukkan 0 untuk berhenti):")
+		j = 0
+		for {
+			fmt.Scan(&tanggal)
+			if tanggal == 0 {
+				break
+			}
+			if j < NMAX {
+				A[i].tanggal[j] = tanggal
+				j++
+			} else {
+				fmt.Println("Jumlah tanggal yang dimasukkan telah mencapai batas maksimal.")
+				break
+			}
+		}
+		if i < *n-1 {
+			fmt.Println("barber berikutnya")
 		}
 	}
 
 }
+func cetakListBarber(A Arrint, n int) {
+	/*
+		IS: Array barber A sepanjang n terdefinisi
+		FS: Menampilkan daftar barber
+	*/
 
-func menuAdmin() {
-	// mencetak pertanyaan untuk menu awal
-	fmt.Println("1. Masukan Data", "\n0. Balik menu")
+	var i int
+	for i = 0; i < n; i++ {
+		fmt.Printf("%d. Nama: %s, Harga: %d, Rating: %d, Tanggal: ", i+1, A[i].nama, A[i].harga, A[i].rating)
+		j := 0
+		for A[i].tanggal[j] != 0 && j < NMAX {
+			fmt.Printf("%d ", A[i].tanggal[j])
+			j++
+		}
+		fmt.Println()
+	}
+
+	booking()
 
 }
 
-func menuAwal() {
-	// FS: Mencetak pertanyaan untuk menu awal
-	fmt.Println("Siapa anda?", "\n1. Admin", "\n2. Customer")
-}
-
-func menuCustomer() {
-	// FS: Mencetak pertanyaan untuk menu awal
-	fmt.Println("1. List barber", "\n2. Cari barber", "\n3. Filter harga", "\n0. Balik menu")
-}
-
-func cariBarber(A Arrint, n int, namaBarber string) {
+func cariNamaBarber(A Arrint, n int, namaBarber string) {
 	var found bool
 	for i := 0; i < n; i++ {
 		if A[i].nama == namaBarber {
@@ -86,119 +148,22 @@ func cariBarber(A Arrint, n int, namaBarber string) {
 
 }
 
-func filterHarga(A Arrint, n int) {
-	var pilihan, low, high int
-	fmt.Println("1. Rp.0 - Rp.10.000")
-	fmt.Println("2. Rp.10.000 - Rp.30.000")
-	fmt.Println("3. Rp.30.000 - Rp.50.000")
-	fmt.Println("4. >= Rp.50.000 ")
-
-	fmt.Scan(&pilihan)
-
-	if pilihan == 1 {
-		low = 0
-		high = 10000
-	} else if pilihan == 2 {
-		low = 10000
-		high = 30000
-	} else if pilihan == 3 {
-		low = 30000
-		high = 50000
+func booking() {
+	fmt.Println("Pilihlah pilihan dibawah")
+	fmt.Println("1. Booking barber", "\n2. Kembali")
+	fmt.Scan(&x)
+	if x == 1 {
+		fmt.Println("fiturnya belum jadi")
+	} else if x == 2 {
+		menuCustomer()
 	} else {
-		low = 50000
-		high = A[n-1]
-	}
-
-	elementsInRange := Range(A, low, high)
-	fmt.Printf("Harga di  range [%d, %d]: %v\n", low, high, elementsInRange)
-}
-
-func Range(A Arrint, low, high int) []int {
-	start := idxPertama(A, low)
-	end := idxAkhir(A, high)
-
-	if start <= end && start < len(A) && end >= 0 {
-		return A[start : end+1]
-	}
-	return []int{}
-
-}
-
-func idxPertama(A Arrint, target int) int {
-	low, high := 0, len(A)-1
-	for low <= high {
-		mid := (low + high) / 2
-		if A[mid] < target {
-			low = mid + 1
-		} else {
-			high = mid - 1
-		}
-	}
-	return low
-
-}
-
-func idxAkhir(A Arrint, target int) int {
-	low, high := 0, len(A)-1
-	for low <= high {
-		mid := (low + high) / 2
-		if A[mid] <= target {
-			low = mid + 1
-		} else {
-			high = mid - 1
-		}
-	}
-	return high
-}
-
-func inputBarber(A *Arrint, n *int) {
-	/*
-		IS: Array barber A sepanjang n terdefinisi sembarang
-		FS: Array Barber A sepanjang n telah terdefinisi
-	*/
-
-	if *n > NMAX {
-		*n = NMAX
-	}
-
-	var i, j, tanggal int
-
-	fmt.Println("Masukkan nama, harga, dan rating barber")
-	for i = 0; i < *n; i++ {
-		fmt.Scan(&A[i].nama, &A[i].harga, &A[i].rating)
-		// fitur untuk input tanggal
-		fmt.Println("Masukkan tanggal (masukkan 0 untuk berhenti):")
-		j = 0
-		for {
-			fmt.Scan(&tanggal)
-			if tanggal == 0 {
-				break
-			}
-			if j < NMAX {
-				A[i].tanggal[j] = tanggal
-				j++
-			} else {
-				fmt.Println("Jumlah tanggal yang dimasukkan telah mencapai batas maksimal.")
-				break
-			}
-		}
+		fmt.Println("masukan tidak valid silahkan pilih kembali")
+		booking()
 	}
 }
 
-func cetakListBarber(A Arrint, n int) {
-	/*
-		IS: Array barber A sepanjang n terdefinisi
-		FS: Menampilkan daftar barber
-	*/
+func filterRangeharga() {
+	fmt.Println("Pilih rentang harga", "\n1. < 50k", "\n2. 50k - 100k", "\n3. 100k - 150k", "\n4. > 150k")
 
-	var i int
-	for i = 0; i < n; i++ {
-		fmt.Printf("%d. Nama: %s, Harga: %d, Rating: %d, Tanggal: ", i+1, A[i].nama, A[i].harga, A[i].rating)
-		j := 0
-		for A[i].tanggal[j] != 0 && j < NMAX {
-			fmt.Printf("%d ", A[i].tanggal[j])
-			j++
-		}
-		fmt.Println()
-	}
 }
+func filterRating() {}
