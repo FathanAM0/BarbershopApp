@@ -170,20 +170,50 @@ func cariNamaBarber(A Arrint, n int, namaBarber string) {
 	booking()
 }
 
-func booking() {
+func booking(A Arrint, n int) {
+	var idxBooking, idxTanggal int
+	var nTanggal int
 	fmt.Println("Pilihlah pilihan dibawah")
-	fmt.Println("1. Booking barber", "\n2. Kembali")
+	fmt.Println("1. Booking barber", "\n0. Kembali")
 	fmt.Scan(&x)
 	if x == 1 {
-		fmt.Println("Fitur booking belum jadi")
-	} else if x == 2 {
+		for i := 0; i < n; i++ {
+			fmt.Printf("%d. %s, Harga: %d, Rating: %d, Tanggal: ", i+1, A[i].nama, A[i].harga, A[i].rating)
+			fmt.Println()
+			fmt.Println("Tanggal: ")
+			nTanggal = 0
+			for j := 0; j < NMAX && A[i].tanggal[j] != 0; j++ {
+				fmt.Printf("%d. %d ", j+1, A[i].tanggal[j])
+				fmt.Println()
+				nTanggal++
+			}
+			fmt.Println()
+		}
+
+		fmt.Println("Masukan nomor barber yang akan di booking: ")
+		fmt.Scan(&idxBooking)
+		fmt.Println("Masukan nomor tanggal yang akan di booking: ")
+		fmt.Scan(&idxTanggal)
+
+		idxTanggal = idxTanggal - 1 // dikurang 1, krn index array dimulai dari 0
+		idxBooking = idxBooking - 1 // dikurang 1, krn index array dimulai dari 0
+
+		if idxBooking >= 0 && idxBooking < n && idxTanggal >= 0 && idxTanggal < nTanggal && A[idxBooking].tanggal[idxTanggal] != 0 {
+			fmt.Println("Resi Booking")
+			fmt.Printf("Nama barber: %s, tanggal booking: %d\n", A[idxBooking].nama, A[idxBooking].tanggal[idxTanggal])
+			hapusArray(&A, idxBooking, idxTanggal, nTanggal)
+		} else {
+			fmt.Println("Nomor barber atau tanggal tidak valid.")
+		}
+		menuCustomer()
+	} else if x == 0 {
 		menuCustomer()
 	} else {
 		fmt.Println("Masukan tidak valid, silahkan pilih kembali")
-		booking()
+		booking(A, n)
 	}
 }
-
+//fungsi hapus array masih belum dapet caranya, masih gagal terus
 func sorting(A *Arrint, Ah *Arrharga, n int) {
 	var i, j, minIdx int
 	var temp int
