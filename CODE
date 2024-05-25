@@ -75,7 +75,15 @@ func menuCustomer() {
 			ARange[i].nama = data[idx].nama
 			ARange[i].harga = data[idx].harga
 			ARange[i].rating = data[idx].rating
-			fmt.Printf("%d. Nama: %s, Harga: %d, Rating: %d\n", i+1, data[idx].nama, data[idx].harga, data[idx].rating)
+			// Copy the tanggal array
+			for j := 0; j < NMAX; j++ {
+				ARange[i].tanggal[j] = data[idx].tanggal[j]
+			}
+			fmt.Printf("%d. Nama: %s, Harga: %d, Rating: %d, Tanggal: ", i+1, ARange[i].nama, ARange[i].harga, ARange[i].rating)
+			for j := 0; j < NMAX && ARange[i].tanggal[j] != 0; j++ {
+				fmt.Printf("%d ", ARange[i].tanggal[j])
+			}
+			fmt.Println()
 		}
 		bookingRange(ARange, count)
 
@@ -102,8 +110,12 @@ func inputBarber(A *Arrint, Ah *Arrharga, n *int) {
 				break
 			}
 			if j < NMAX {
-				A[i].tanggal[j] = tanggal
-				j++
+				if !tanggalSudahAda(A[i].tanggal, j, tanggal) {
+					A[i].tanggal[j] = tanggal
+					j++
+				} else {
+					fmt.Println("Tanggal sudah ada, masukkan tanggal lain:")
+				}
 			} else {
 				fmt.Println("Jumlah tanggal yang dimasukkan telah mencapai batas maksimal.")
 				break
@@ -113,6 +125,15 @@ func inputBarber(A *Arrint, Ah *Arrharga, n *int) {
 			fmt.Println("Barber berikutnya")
 		}
 	}
+}
+
+func tanggalSudahAda(tanggalArr [NMAX]int, n int, tanggal int) bool {
+	for i := 0; i < n; i++ {
+		if tanggalArr[i] == tanggal {
+			return true
+		}
+	}
+	return false
 }
 
 func cetakListBarber(A Arrint, Ah Arrharga, n int) {
@@ -236,59 +257,94 @@ func bookingRange(A ArrNew, n int) {
 }
 
 func bookOrnot(A Arrint, n int) {
-	var index, i int
-	var ketemu bool
+	var index int
+
+	// Input barber index
 	fmt.Println("Pilih barber kamu : ")
 	fmt.Scan(&index)
-	ketemu = false
-	i = 0
+
+	// Input desired date
+
+	// Check if the selected index is valid
 	if index > n || index < 1 {
 		fmt.Println("Pilihan tidak valid silahkan pilih barber lagi")
 		bookOrnot(A, n)
 		return
 	}
+	bookOrnotTanggal(A, n, index)
+}
+
+func bookOrnotTanggal(A Arrint, n int, idx int) {
+	var tanggalDiinginkan, index, i int
+	var ketemu bool
+	fmt.Println("Tanggal berapa yang kamu inginkan : ")
+	fmt.Scan(&tanggalDiinginkan)
+	ketemu = false
+	index = idx
+	// Iterate through barbers
 	for i < n && !ketemu {
 		if index-1 == i {
-			fmt.Printf("%d. Nama: %s, Harga: %d, Rating: %d, Tanggal: ", i+1, A[i].nama, A[i].harga, A[i].rating)
-			j := 0
-			for A[i].tanggal[j] != 0 && j < NMAX {
-				fmt.Printf("%d ", A[i].tanggal[j])
-				j++
+			// Check if the desired date is available for booking
+			if tanggalSudahAda(A[i].tanggal, n, tanggalDiinginkan) {
+				// Print barber's details with available dates
+				fmt.Printf("%d. Nama: %s, Harga: %d, Rating: %d, Tanggal: %d", i+1, A[i].nama, A[i].harga, A[i].rating, tanggalDiinginkan)
+
+				fmt.Println()
+				ketemu = true
+			} else {
+				// If the desired date is not available, prompt for a different date
+				fmt.Println("Tanggal tidak tersedia, pilih tanggal lain:")
+				bookOrnotTanggal(A, n, index)
 			}
-			fmt.Println()
-			ketemu = true
 		}
 		i++
 	}
 }
 
 func bookOrnotNew(A ArrNew, n int) {
-	var index, i int
-	var ketemu bool
+	var index int
+
+	// Input barber index
 	fmt.Println("Pilih barber kamu : ")
 	fmt.Scan(&index)
-	ketemu = false
-	i = 0
+
+	// Input desired date
+
+	// Check if the selected index is valid
 	if index > n || index < 1 {
 		fmt.Println("Pilihan tidak valid silahkan pilih barber lagi")
 		bookOrnotNew(A, n)
 		return
 	}
+	bookOrnotNewTanggal(A, n, index)
+}
+func bookOrnotNewTanggal(A ArrNew, n int, idx int) {
+	var tanggalDiinginkan, index, i int
+	var ketemu bool
+	fmt.Println("Tanggal berapa yang kamu inginkan : ")
+	fmt.Scan(&tanggalDiinginkan)
+	ketemu = false
+	index = idx
+	// Iterate through barbers
 	for i < n && !ketemu {
 		if index-1 == i {
-			fmt.Printf("%d. Nama: %s, Harga: %d, Rating: %d, Tanggal: ", i+1, A[i].nama, A[i].harga, A[i].rating)
-			j := 0
-			for A[i].tanggal[j] != 0 && j < NMAX {
-				fmt.Printf("%d ", A[i].tanggal[j])
-				j++
+			// Check if the desired date is available for booking
+			if tanggalSudahAda(A[i].tanggal, n, tanggalDiinginkan) {
+				// Print barber's details with available dates
+				fmt.Printf("%d. Nama: %s, Harga: %d, Rating: %d, Tanggal: %d", i+1, A[i].nama, A[i].harga, A[i].rating, tanggalDiinginkan)
+
+				fmt.Println()
+				ketemu = true
+			} else {
+				// If the desired date is not available, prompt for a different date
+				fmt.Println("Tanggal tidak tersedia, pilih tanggal lain:")
+				bookOrnotNewTanggal(A, n, index)
 			}
-			fmt.Println()
-			ketemu = true
 		}
 		i++
 	}
 }
-x
+
 func sorting(A *Arrint, Ah *Arrharga, n int) {
 	var i, j, minIdx int
 	var temp int
